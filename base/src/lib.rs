@@ -1,10 +1,17 @@
+extern crate base_api;
+
 use std::convert::AsRef;
+
+use base_api::*;
+// use base_api::{Logger, LogEntry};
+// use base_api::{LoggerTypes, LogEntryTypes};
 
 pub struct Logger;
 
 pub struct LogEntry(String);
 
-impl LogEntry {
+
+impl LogEntryTypes for LogEntry {
     fn new(s: &str) -> LogEntry {
         LogEntry(s.to_string())
     }
@@ -16,12 +23,14 @@ impl AsRef<str> for LogEntry {
     }
 }
 
-impl Logger {
-    pub fn new() -> Logger {
+impl LoggerTypes for Logger {
+    type LogEntryType = LogEntry;
+
+    fn new() -> Logger {
         Logger
     }
     
-    pub fn log(&self, s: &str) -> LogEntry {
+    fn log(&self, s: &str) -> LogEntry {
         LogEntry::new(s)
     }
 }

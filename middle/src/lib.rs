@@ -1,15 +1,16 @@
-extern crate base;
+// extern crate base-api as base; // Might be confusing
+extern crate base_api;
 
-use base::{Logger, LogEntry};
+use base_api::*;
 use std::mem;
 
-pub struct Middleware {
-    logger: Logger,
-    violations: Vec<LogEntry>,
+pub struct Middleware<LoggerType: LoggerTypes, LogEntryType: LogEntryTypes> {
+    logger: LoggerType,
+    violations: Vec<LogEntryType>,
 }
 
-impl Middleware {
-    fn new(logger: Logger) -> Middleware {
+impl<LoggerType: LoggerTypes, LogEntryType: LogEntryTypes> Middleware<LoggerType, LogEntryType> {
+    fn new(logger: LoggerType) -> Middleware<LoggerType, LogEntryType> {
         Middleware {
             logger,
             violations: vec![]
@@ -20,17 +21,17 @@ impl Middleware {
         self.violations.push(self.logger.log(s));
     }
 
-    pub fn take_violations(&mut self) -> Vec<LogEntry> {
+    pub fn take_violations(&mut self) -> Vec<LogEntryType> {
         mem::replace(&mut self.violations, vec![])
     }
 
-    pub fn take_logger(self) -> Logger {
+    pub fn take_logger(self) -> LoggerType {
         self.logger
     }
 }
 
-pub fn create_middleware() -> Middleware {
-    Middleware::new(Logger::new())
+pub fn create_middleware<LoggerType: LoggerTypes, LogEntryType: LogEntryTypes>() -> Middleware<LoggerType, LogEntryType> {
+    Middleware::new(LoggerType::new())
 }
 
 #[cfg(test)]
