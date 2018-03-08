@@ -1,11 +1,12 @@
 extern crate base;
 extern crate middle;
 
+use base::Logger;
 use base::do_a_bunch_of_things;
 use middle::create_middleware;
 
 fn main() {
-    let mut m = create_middleware();
+    let mut m = create_middleware::<Logger>();
     m.log_violation("invalid");
     m.log_violation("unauthorized");
     let violations = m.take_violations();
